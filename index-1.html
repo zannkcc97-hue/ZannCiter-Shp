@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>ZaanCiterr | OB52 Store</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      outline: none;
+    }
+
+    body {
+      background: radial-gradient(circle at 10% 20%, #0a0a1a, #03010f);
+      color: #f0eefc;
+      padding: 1.5rem;
+      min-height: 100vh;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1e1a3a; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background: #b77cff; border-radius: 10px; }
+
+    .container { max-width: 1300px; margin: 0 auto; }
+
+    .glow-header { text-align: center; margin-bottom: 2rem; }
+    .badge-neon {
+      background: rgba(128, 0, 255, 0.2);
+      backdrop-filter: blur(12px);
+      display: inline-block;
+      padding: 0.3rem 1.2rem;
+      border-radius: 60px;
+      font-size: 0.75rem;
+      border: 1px solid #aa66ff;
+      color: #d9b4ff;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 3rem;
+      background: linear-gradient(135deg, #e6aaff, #aa66ff, #7a2eff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 12px #9b4dff40;
+      letter-spacing: -1px;
+    }
+    .sub { color: #bc9aff; margin-top: 8px; }
+
+    .hero-img {
+      text-align: center;
+      margin: 20px auto 30px;
+      max-width: 400px;
+      width: 100%;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 20px 35px -10px rgba(106, 13, 255, 0.5), 0 0 0 2px #aa66ff66;
+    }
+    .hero-img video { width: 100%; height: 100%; display: block; border-radius: 28px; }
+
+    /* SPLASH SCREEN */
+    #splashScreen {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 30% 20%, #0d0a2a, #03010f);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      gap: 2rem;
+      transition: opacity 0.6s ease;
+    }
+    #splashScreen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .splash-title {
+      font-size: 3.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #e6aaff, #aa66ff, #7a2eff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-align: center;
+      letter-spacing: -1px;
+      animation: splashGlow 2s ease-in-out infinite alternate;
+    }
+    @keyframes splashGlow {
+      from { filter: drop-shadow(0 0 8px #aa66ff80); }
+      to   { filter: drop-shadow(0 0 28px #c084fccc); }
+    }
+    .splash-btn {
+      background: linear-gradient(95deg, #aa66ff, #813eff);
+      border: none;
+      padding: 16px 48px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 8px 24px #7a2eff66;
+      transition: transform 0.15s, box-shadow 0.15s;
+      width: auto;
+    }
+    .splash-btn:hover, .splash-btn:active {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 32px #aa66ffaa;
+    }
+    .splash-credit {
+      font-size: 0.72rem;
+      color: #5a3f88;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .splash-photo {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #aa66ff;
+      box-shadow: 0 0 30px #9b4dff80;
+      margin-bottom: 0.5rem;
+    }
+    #mainContent { display: none; opacity: 0; transition: opacity 0.6s ease; }
+    #mainContent.visible { opacity: 1; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    #mainContent.visible .container {
+      animation: slideUp 0.6s ease forwards;
+    }
+
+    .category-card {
+      background: rgba(20, 15, 45, 0.6);
+      backdrop-filter: blur(4px);
+      border-radius: 40px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid #6a2eff66;
+    }
+    .category-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      border-left: 6px solid #c084fc;
+      padding-left: 18px;
+      margin-bottom: 1.4rem;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.2rem;
+    }
+    .product-card {
+      background: linear-gradient(145deg, #15102e, #0c0922);
+      border-radius: 28px;
+      padding: 1rem;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      border: 1px solid #3a2a6e;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      border-color: #c084fc;
+      box-shadow: 0 14px 28px -8px #9b4dff80;
+      background: #1a1138;
+    }
+    .product-name { font-weight: 600; font-size: 0.95rem; margin: 8px 0; }
+    .product-price { font-size: 1.2rem; font-weight: bold; color: #e9b3ff; text-shadow: 0 0 4px #c45eff; }
+    .rating-mini {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin: 8px 0;
+      font-size: 0.75rem;
+      color: #ffcc66;
+    }
+    .stars-mini {
+      letter-spacing: 2px;
+    }
+    .badge-platform { background: #2a1f55; display: inline-block; padding: 2px 12px; border-radius: 30px; font-size: 0.7rem; }
+
+    /* MODAL */
+    .modal-modern {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .modal-container {
+      background: #100b26e6;
+      border-radius: 44px;
+      max-width: 550px;
+      width: 90%;
+      padding: 1.5rem;
+      border: 1px solid #b77eff;
+      box-shadow: 0 0 35px #9f4eff66;
+      animation: zoomInSpring 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    @keyframes zoomInSpring {
+      0% { opacity: 0; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .modal-closing {
+      animation: zoomOutSpring 0.25s cubic-bezier(0.34, 1.2, 0.64, 1) forwards !important;
+    }
+    @keyframes zoomOutSpring {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.85); }
+    }
+    .close-modal { float: right; font-size: 28px; cursor: pointer; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: #1f1a3a;
+      border: 1px solid #5f3bcc;
+      border-radius: 36px;
+      color: white;
+      outline: none;
+    }
+    .file-input-custom {
+      width: 100%;
+      padding: 12px;
+      background: #2a235a;
+      border-radius: 36px;
+      color: white;
+      cursor: pointer;
+      border: 1px dashed #b77eff;
+    }
+    .preview-container {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-width: 200px;
+      margin: 10px auto 0;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #0a0820;
+      display: none;
+    }
+    .preview-img { width: 100%; height: 100%; object-fit: cover; }
+    .payment-flex { display: flex; gap: 20px; margin: 10px 0; flex-wrap: wrap; }
+    .pay-method { display: flex; align-items: center; gap: 8px; background: #221d44; padding: 6px 16px; border-radius: 40px; cursor: pointer; }
+    .nomor-rekening { background: #00000033; padding: 8px; border-radius: 28px; font-size: 0.85rem; text-align: center; margin: 8px 0; }
+    button {
+      background: linear-gradient(95deg, #aa66ff, #813eff);
+      border: none;
+      padding: 14px;
+      width: 100%;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 1rem;
+      color: white;
+      cursor: pointer;
+    }
+    .rating-box {
+      background: #1a153a;
+      border-radius: 28px;
+      padding: 12px;
+      margin: 12px 0;
+    }
+    .star-rating {
+      display: flex;
+      gap: 8px;
+      font-size: 28px;
+      cursor: pointer;
+      justify-content: center;
+    }
+    .star-rating span {
+      color: #555;
+      transition: 0.1s;
+    }
+    .star-rating span.active, .star-rating span:hover {
+      color: #ffcc66;
+      text-shadow: 0 0 6px #ffaa33;
+    }
+    .review-list {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 15px;
+      border-top: 1px solid #3a2a6e;
+      padding-top: 12px;
+    }
+    .review-item {
+      background: #0f0c22;
+      border-radius: 20px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .review-stars { color: #ffcc66; font-size: 12px; letter-spacing: 2px; }
+    .review-text { font-size: 12px; margin-top: 4px; color: #ccc; }
+    .review-name { font-size: 10px; color: #b77eff; margin-top: 4px; }
+    footer { text-align: center; margin-top: 3rem; opacity: 0.7; }
+    .note-text { font-size: 0.7rem; margin-top: 12px; color: #b29eff; text-align: center; }
+    hr { margin: 10px 0; border-color: #3a2a6e; }
+  </style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splashScreen">
+  <img class="splash-photo" src="https://files.catbox.moe/321av5.jpg" alt="ZaanCiterr">
+  <div class="splash-title">ZaanCiterr</div>
+  <button class="splash-btn" id="splashBtn">LANJUT KE PEMBELIAN</button>
+  <div class="splash-credit">by zann</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="mainContent">
+<div class="container">
+  <div class="glow-header">
+    <div class="badge-neon">ADMIN FASTRESS • SLOW RES = ADA KESIBUKAN</div>
+    <h1>ZaanCiterr</h1>
+    <div class="sub">OB52 STORE</div>
+    <div class="sub">LEBIH MAHAL LEBIH GACOR | FULL TUTOR + GARANSI</div>
+  </div>
+
+  <div class="hero-img">
+    <video id="mainProductVideo" src="https://files.catbox.moe/mfbnil.mp4" loop playsinline preload="auto"></video>
+  </div>
+
+  <div id="productListRoot"></div>
+  <footer>DANA & GOPAY : 082392368932 | QRIS coming soon | Bergaransi</footer>
+</div>
+
+</div><!-- end mainContent -->
+
+<!-- MODAL ORDER + RATING -->
+<div id="orderModal" class="modal-modern">
+  <div class="modal-container" id="modalContainer">
+    <span class="close-modal">&times;</span>
+    <h3>Order Produk</h3>
+    <p id="modalProductName" style="font-weight:600; color:#d4b3ff;"></p>
+    <p id="modalProductPrice" style="font-size:1.3rem; margin:4px 0 12px;"></p>
+    
+    <div class="form-group">
+      <input type="text" id="tiktokName" placeholder="Nama TikTok">
+    </div>
+    <div class="form-group">
+      <input type="tel" id="waNumber" placeholder="Nomor WhatsApp (aktif)">
+    </div>
+    <div class="form-group">
+      <input type="email" id="emailBuyer" placeholder="Email Gmail">
+    </div>
+    
+    <div class="form-group">
+      <label>Upload Bukti SS Pembayaran</label>
+      <input type="file" id="proofImage" accept="image/*" class="file-input-custom">
+      <div id="previewContainer" class="preview-container">
+        <img id="previewImg" class="preview-img" alt="Preview bukti">
+      </div>
+    </div>
+
+    <label>Metode Bayar</label>
+    <div class="payment-flex">
+      <label class="pay-method"><input type="radio" name="payMethod" value="DANA" checked> DANA</label>
+      <label class="pay-method"><input type="radio" name="payMethod" value="GOPAY"> GOPAY</label>
+      <label class="pay-method" style="opacity:0.6"><input type="radio" name="payMethod" value="QRIS" disabled> QRIS (CS)</label>
+    </div>
+    
+    <div id="nomorDisplay" class="nomor-rekening">Nomor DANA: 082392368932</div>
+    
+    <button id="sendOrderBtn">KIRIM KE BOT TELEGRAM</button>
+    <div class="note-text">Klik "Pilih file" untuk buka galeri/file manager HP</div>
+  </div>
+</div>
+
+<!-- MODAL RATING & REVIEW -->
+<div id="ratingModal" class="modal-modern">
+  <div class="modal-container" style="max-width:450px;">
+    <span class="close-rating-modal" style="float:right; font-size:28px; cursor:pointer;">&times;</span>
+    <h3>Beri Rating & Review</h3>
+    <p id="ratingProductName" style="margin:10px 0; color:#d4b3ff;"></p>
+    
+    <div class="rating-box">
+      <div class="star-rating" id="starRating">
+        <span data-value="1">☆</span>
+        <span data-value="2">☆</span>
+        <span data-value="3">☆</span>
+        <span data-value="4">☆</span>
+        <span data-value="5">☆</span>
+      </div>
+      <textarea id="reviewText" placeholder="Tulis komentar kamu tentang produk ini..." rows="3" style="width:100%; margin-top:12px; padding:10px; border-radius:20px; background:#1f1a3a; border:none; color:white;"></textarea>
+      <input type="text" id="reviewerName" placeholder="Nama kamu (opsional)" style="width:100%; margin-top:8px; padding:10px; border-radius:20px; background:#1f1a3a; border:none; color:white;">
+      <button id="submitRatingBtn" style="margin-top:12px;">Kirim Rating</button>
+    </div>
+
+    <div class="review-list" id="reviewList">
+      <!-- review akan muncul di sini -->
+    </div>
+  </div>
+</div>
+
+<script>
+  // ======================= DATABASE PRODUK ===================
+  const rawProducts = [
+    "AIMLOCK 40% : 10K","AIMLOCK 45% : 15K","AIMLOCK 50% : 20K","AIMLOCK 65% : 25K","AIMLOCK 80% : 35K","AIMLOCK 90% : 50K",
+    "HEADLOCK 40% : 10K","HEADLOCK 45% : 15K","HEADLOCK 50% : 20K","HEADLOCK 65% : 25K","HEADLOCK 80% : 35K","HEADLOCK 90% : 50K",
+    "LOCK HEAD 99% : 129K","DRAG HS 40% : 10K","DRAG HS 45% : 15K","DRAG HS 55% : 20K","DRAG HS 65% : 25K","DRAG HS 80% : 35K","DRAG HS 90% : 50K",
+    "EASY DRAG 40% : 10K","EASY DRAG 45% : 15K","EASY DRAG 55% : 20K","EASY DRAG 65% : 25K","EASY DRAG 80% : 35K","EASY DRAG 90% : 50K",
+    "BADAN HS ALL ANDRO : 40K","SET ANDRO VIP : 30K",
+    "BADAN HS IOS : 70k","LEHER HS IOS : 70k","HEADLOCK 50% : 55k","HEADLOCK 70% : 75k","HEADLOCK 80% : 85k","HEADLOCK 90% : 95k",
+    "DRAG HS IOS 50% : 50K","DRAG HS IOS 65% : 65k","DRAG HS IOS 80% : 80K","DRAG HS IOS 90% : 90K","SET IP VIP : 50K",
+    "HOLOGRAM SENJATA (ANDRO) : 15k","HOLOGRAM 3D (ANDRO) : 20K","HOLOGRAM SENJATA (IOS) : 30K","HOLOGRAM 3D (IOS) : 35K",
+    "GLOWAL MINI : 10K","GLOWAL GEPENG : 15K","GRAFIK MC : 10K"
+  ];
+
+  function parseProduct(str) {
+    let idx = str.lastIndexOf(":");
+    let name = str.substring(0, idx).trim();
+    let priceRaw = str.substring(idx+1).trim().toLowerCase().replace(/k/g, "000");
+    let priceNum = parseInt(priceRaw.replace(/[^0-9]/g, ""));
+    if (isNaN(priceNum)) priceNum = 0;
+    let priceFormatted = "Rp " + priceNum.toLocaleString("id-ID");
+    return { name, priceNum, priceFormatted };
+  }
+
+  const allProducts = rawProducts.map(p => parseProduct(p));
+  const categories = {
+    "ANDROID": allProducts.slice(0,27),
+    "IPHONE / IOS": allProducts.slice(27,38),
+    "HOLOGRAM (ANDRO & IOS)": allProducts.slice(38,42),
+    "GLOWAL MINI/GEPENG": allProducts.slice(42,44),
+    "GRAFIK MC": allProducts.slice(44,45)
+  };
+
+// GANTI bagian dummyRatings dengan ini (copy paste seluruh isi ratingsData yang baru)
+
+let ratingsData = JSON.parse(localStorage.getItem("productRatings")) || {};
+
+// Contoh data rating awal - SUDAH DIUPDATE DENGAN AIMLOCK 50% & 90%
+const dummyRatings = {
+  "AIMLOCK 40%": { 
+    avg: 4.5, total: 12, 
+    reviews: [
+      { name: "RendiGanz", stars: 5, text: "Gacor banget aimlocknya, auto headshot!", date: "2026-04-01" },
+      { name: "JokoFF", stars: 4, text: "Mantap cuma kadang miss dikit", date: "2026-04-02" }
+    ] 
+  },
+  
+  "AIMLOCK 50%": { 
+    avg: 4.9, total: 54, 
+    reviews: [
+      { name: "Si Udin", stars: 5, text: "Wah uda 50% aja udah kayak pake aimbot pro, musuh pada tumbang semua 😂", date: "2026-04-05" },
+      { name: "Rere", stars: 5, text: "Serius dah, aimlock 50% ini recommended banget, gas pol rank!", date: "2026-04-05" },
+      { name: "Budi Jago", stars: 5, text: "Awalnya ragu takut zonk, eh ternyata jos gandos broo", date: "2026-04-04" },
+      { name: "Dikaa", stars: 5, text: "Kepencet terus ini mah, musuh kagak bisa gerak wkwk", date: "2026-04-04" },
+      { name: "Satria", stars: 4, text: "Oke sih cuma kadang delay dikit, tapi worth it lah", date: "2026-04-03" },
+      { name: "Yanto", stars: 5, text: "Gokil ni setting, aim nya nempel mulu", date: "2026-04-03" },
+      { name: "Caca", stars: 5, text: "Bikin jadi super saiyan wkwk, makasih ZaanCiterr", date: "2026-04-02" },
+      { name: "Jajang", stars: 5, text: "Dah cobain semua, yang ini paling jos", date: "2026-04-02" },
+      { name: "Sasa", stars: 5, text: "Temen pada tanya pake cheat apa, ku diem aja 😎", date: "2026-04-01" },
+      { name: "Andre", stars: 4, text: "Mantap sih, cuma pas lagi senggol dikit kadang lepas", date: "2026-04-01" },
+      { name: "Gilang", stars: 5, text: "Udah beli 3x, selalu gacor, ga nyesel", date: "2026-03-31" },
+      { name: "Putri", stars: 5, text: "Cewek juga bisa pro pake ini 🤭", date: "2026-03-31" }
+    ] 
+  },
+  
+  "AIMLOCK 90%": { 
+    avg: 4.8, total: 32, 
+    reviews: [
+      { name: "KingMahesa", stars: 5, text: "90% ini beda level, musuh langsung lemes duluan", date: "2026-04-05" },
+      { name: "Leo", stars: 5, text: "Cocok buat push rank, aimnya kayak magnet 🧲", date: "2026-04-04" },
+      { name: "Asep", stars: 4, text: "Oke punya, cuma agak ngeleg pas hp panas", date: "2026-04-04" },
+      { name: "Rina", stars: 5, text: "Dah level dewa pake ini, top global soon 😤", date: "2026-04-03" },
+      { name: "Zaki", stars: 5, text: "Gaskeun beli lagi mingdep, puas banget", date: "2026-04-03" },
+      { name: "Fajar", stars: 5, text: "Auto menang terus, musuh ngira aku pro player asli", date: "2026-04-02" },
+      { name: "Mila", stars: 4, text: "Enak sih cuma agak boros kuota wkwk", date: "2026-04-02" },
+      { name: "Rizal", stars: 5, text: "Gak pake lama langsung jos, admin fast respons", date: "2026-04-01" },
+      { name: "Doni", stars: 5, text: "Recomended! udah 5 kali beli disini", date: "2026-04-01" }
+    ] 
+  },
+  
+  "HEADLOCK 50%": { 
+    avg: 4.8, total: 8, 
+    reviews: [
+      { name: "SasukeUchiha", stars: 5, text: "Headlock 50% udah kayak pro player", date: "2026-04-03" },
+      { name: "NarutoKun", stars: 4, text: "Recommended banget!", date: "2026-04-01" }
+    ] 
+  },
+  
+  "DRAG HS 80%": { 
+    avg: 4.7, total: 15, 
+    reviews: [
+      { name: "ItachiSama", stars: 5, text: "Drag HS mantap buat ranked", date: "2026-04-04" },
+      { name: "KakashiSensei", stars: 4, text: "Oke sip, next beli lagi", date: "2026-03-30" }
+    ] 
+  },
+  
+  "SET ANDRO VIP": { 
+    avg: 5.0, total: 5, 
+    reviews: [
+      { name: "MadaraUchiha", stars: 5, text: "VIP beda sendiri, jos gandos!", date: "2026-04-05" }
+    ] 
+  },
+  
+  "BADAN HS IOS": { 
+    avg: 4.3, total: 7, 
+    reviews: [
+      { name: "LeviAkerman", stars: 4, text: "Untuk IOS lumayan akurat", date: "2026-04-02" }
+    ] 
+  }
+};
+
+  // Inisialisasi dummy jika belum ada
+  for (let [prodName, data] of Object.entries(dummyRatings)) {
+    if (!ratingsData[prodName]) {
+      ratingsData[prodName] = data;
+    }
+  }
+  localStorage.setItem("productRatings", JSON.stringify(ratingsData));
+
+  function getProductRating(productName) {
+    return ratingsData[productName] || { avg: 0, total: 0, reviews: [] };
+  }
+
+  function addRating(productName, stars, text, reviewerName) {
+    if (!ratingsData[productName]) {
+      ratingsData[productName] = { avg: 0, total: 0, reviews: [] };
+    }
+    const newReview = {
+      name: reviewerName || "Anonim",
+      stars: stars,
+      text: text,
+      date: new Date().toISOString().slice(0,10)
+    };
+    ratingsData[productName].reviews.unshift(newReview);
+    
+    // Hitung ulang average
+    let totalStars = 0;
+    for (let r of ratingsData[productName].reviews) {
+      totalStars += r.stars;
+    }
+    ratingsData[productName].avg = totalStars / ratingsData[productName].reviews.length;
+    ratingsData[productName].total = ratingsData[productName].reviews.length;
+    
+    localStorage.setItem("productRatings", JSON.stringify(ratingsData));
+    renderShop(); // refresh tampilan produk
+  }
+
+  function renderStars(avg) {
+    const full = Math.floor(avg);
+    const half = avg % 1 >= 0.5;
+    let stars = "★".repeat(full);
+    if (half) stars += "½";
+    stars += "☆".repeat(5 - Math.ceil(avg));
+    return stars;
+  }
+
+  // ======================= RENDER TOKO ===================
+  function renderShop() {
+    const root = document.getElementById("productListRoot");
+    root.innerHTML = "";
+    for (let [catName, items] of Object.entries(categories)) {
+      if (items.length === 0) continue;
+      const catDiv = document.createElement("div");
+      catDiv.className = "category-card";
+      catDiv.innerHTML = `<div class="category-title"><span>${catName}</span></div><div class="product-grid" id="grid-${catName.replace(/\s/g,'')}"></div>`;
+      root.appendChild(catDiv);
+      const grid = catDiv.querySelector(".product-grid");
+      items.forEach(prod => {
+        const rating = getProductRating(prod.name);
+        const avgStars = rating.avg || 0;
+        const totalRev = rating.total || 0;
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <div class="badge-platform">${prod.name.includes("IOS") ? "iOS" : (prod.name.includes("ANDRO") ? "Android" : "All")}</div>
+          <div class="product-name">${prod.name}</div>
+          <div class="product-price">${prod.priceFormatted}</div>
+          <div class="rating-mini">
+            <span class="stars-mini">${renderStars(avgStars)}</span>
+            <span>(${totalRev} ulasan)</span>
+          </div>
+        `;
+        card.onclick = () => openOrderModal(prod);
+        grid.appendChild(card);
+      });
+    }
+  }
+
+  // ======================= MODAL ORDER ===================
+  let selectedProduct = null;
+  let selectedImageFile = null;
+  const modalOrder = document.getElementById("orderModal");
+  const modalRating = document.getElementById("ratingModal");
+  const modalContainer = document.getElementById("modalContainer");
+  const closeModalBtn = document.querySelector(".close-modal");
+  const modalProductName = document.getElementById("modalProductName");
+  const modalProductPrice = document.getElementById("modalProductPrice");
+  const nomorDisplay = document.getElementById("nomorDisplay");
+
+  let pendingRatingProduct = null; // untuk simpan produk setelah order
+
+  function openOrderModal(product) {
+    selectedProduct = product;
+    modalProductName.innerText = `${product.name}`;
+    modalProductPrice.innerText = `${product.priceFormatted}`;
+    modalOrder.style.display = "flex";
+    document.getElementById("proofImage").value = "";
+    document.getElementById("previewContainer").style.display = "none";
+    selectedImageFile = null;
+    updateNomorByMethod();
+    if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
+  }
+
+  function closeModalWithAnim() {
+    modalContainer.classList.add("modal-closing");
+    setTimeout(() => {
+      modalOrder.style.display = "none";
+      modalContainer.classList.remove("modal-closing");
+    }, 250);
+  }
+
+  function closeRatingModal() {
+    modalRating.style.display = "none";
+    pendingRatingProduct = null;
+  }
+
+  function updateNomorByMethod() {
+    const selected = document.querySelector('input[name="payMethod"]:checked');
+    if (selected && selected.value === "DANA") nomorDisplay.innerHTML = "Nomor DANA: 082392368932";
+    else if (selected && selected.value === "GOPAY") nomorDisplay.innerHTML = "Nomor GOPAY: 082392368932";
+    else nomorDisplay.innerHTML = "Nomor DANA/GOPAY: 082392368932";
+  }
+
+  const fileInput = document.getElementById("proofImage");
+  const previewContainer = document.getElementById("previewContainer");
+  const previewImg = document.getElementById("previewImg");
+  fileInput.addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      selectedImageFile = file;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        previewImg.src = ev.target.result;
+        previewContainer.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    } else alert("Harap pilih file gambar (jpg/png)");
+  });
+
+  document.querySelectorAll('input[name="payMethod"]').forEach(radio => {
+    radio.addEventListener("change", updateNomorByMethod);
+  });
+  closeModalBtn.onclick = closeModalWithAnim;
+  window.onclick = (e) => { if (e.target === modalOrder) closeModalWithAnim(); };
+
+  const BOT_TOKEN = "8186605145:AAH4nAskT_3TbCjYP_WC2I6ZcLspEAJmnTM";
+  const CHAT_ID = "7491173075";
+
+  document.getElementById("sendOrderBtn").addEventListener("click", async () => {
+    const tiktok = document.getElementById("tiktokName").value.trim();
+    const wa = document.getElementById("waNumber").value.trim();
+    const email = document.getElementById("emailBuyer").value.trim();
+    const payMethod = document.querySelector('input[name="payMethod"]:checked');
+    if (!tiktok || !wa || !email) { alert("Isi semua data (TikTok, WA, Email)"); return; }
+    if (!selectedImageFile) { alert("Upload bukti SS pembayaran terlebih dahulu"); return; }
+    if (!payMethod || payMethod.value === "QRIS") { alert("Pilih DANA atau GOPAY"); return; }
+    if (!selectedProduct) { alert("Pilih produk"); return; }
+
+    const formData = new FormData();
+    formData.append("chat_id", CHAT_ID);
+    formData.append("photo", selectedImageFile, "bukti_pembayaran.jpg");
+    formData.append("caption", `ORDER MASUK\nTikTok: ${tiktok}\nWA: ${wa}\nEmail: ${email}\nProduk: ${selectedProduct.name}\nHarga: ${selectedProduct.priceFormatted}\nMetode: ${payMethod.value}\nNo tujuan: 082392368932`);
+
+    try {
+      const photoRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: "POST", body: formData });
+      const resultPhoto = await photoRes.json();
+      if (resultPhoto.ok) {
+        alert("Pesanan terkirim! Terima kasih.");
+        closeModalWithAnim();
+        document.getElementById("tiktokName").value = "";
+        document.getElementById("waNumber").value = "";
+        document.getElementById("emailBuyer").value = "";
+        fileInput.value = "";
+        previewContainer.style.display = "none";
+        selectedImageFile = null;
+        
+        // Buka modal rating
+        pendingRatingProduct = selectedProduct;
+        document.getElementById("ratingProductName").innerText = selectedProduct.name;
+        document.getElementById("reviewText").value = "";
+        document.getElementById("reviewerName").value = "";
+        resetStars();
+        // tampilkan review yang sudah ada
+        showReviewsForProduct(selectedProduct.name);
+        modalRating.style.display = "flex";
+      } else { alert("Gagal mengirim, coba lagi."); console.error(resultPhoto); }
+    } catch (err) { alert("Error: " + err.message); }
+  });
+
+  // ======================= RATING UI ===================
+  let currentRating = 0;
+  const starsSpan = document.querySelectorAll("#starRating span");
+  function resetStars() {
+    currentRating = 0;
+    starsSpan.forEach(s => {
+      s.classList.remove("active");
+      s.innerText = "☆";
+    });
+  }
+  starsSpan.forEach(star => {
+    star.addEventListener("click", () => {
+      currentRating = parseInt(star.dataset.value);
+      starsSpan.forEach((s, idx) => {
+        if (idx < currentRating) {
+          s.classList.add("active");
+          s.innerText = "★";
+        } else {
+          s.classList.remove("active");
+          s.innerText = "☆";
+        }
+      });
+    });
+    star.addEventListener("mouseover", () => {
+      const val = parseInt(star.dataset.value);
+      starsSpan.forEach((s, idx) => {
+        if (idx < val) s.innerText = "★";
+        else s.innerText = "☆";
+      });
+    });
+    star.addEventListener("mouseout", () => {
+      starsSpan.forEach((s, idx) => {
+        if (idx < currentRating) s.innerText = "★";
+        else s.innerText = "☆";
+      });
+    });
+  });
+
+  function showReviewsForProduct(productName) {
+    const rating = getProductRating(productName);
+    const reviewListDiv = document.getElementById("reviewList");
+    if (!rating.reviews || rating.reviews.length === 0) {
+      reviewListDiv.innerHTML = "<div style='text-align:center; padding:10px;'>Belum ada ulasan. Jadi yang pertama!</div>";
+      return;
+    }
+    reviewListDiv.innerHTML = rating.reviews.map(r => `
+      <div class="review-item">
+        <div class="review-stars">${renderStars(r.stars)}</div>
+        <div class="review-text">${r.text}</div>
+        <div class="review-name">— ${r.name} • ${r.date}</div>
+      </div>
+    `).join("");
+  }
+
+  document.getElementById("submitRatingBtn").addEventListener("click", () => {
+    if (!pendingRatingProduct) return;
+    if (currentRating === 0) {
+      alert("Pilih rating bintang dulu!");
+      return;
+    }
+    const reviewText = document.getElementById("reviewText").value.trim();
+    if (!reviewText) {
+      alert("Tulis komentar/review kamu!");
+      return;
+    }
+    const reviewerName = document.getElementById("reviewerName").value.trim() || "Pembeli ZaanCiterr";
+    addRating(pendingRatingProduct.name, currentRating, reviewText, reviewerName);
+    alert("Terima kasih atas rating & review nya!");
+    modalRating.style.display = "none";
+    pendingRatingProduct = null;
+    renderShop();
+  });
+
+  document.querySelector(".close-rating-modal").addEventListener("click", () => {
+    modalRating.style.display = "none";
+    pendingRatingProduct = null;
+  });
+  window.addEventListener("click", (e) => {
+    if (e.target === modalRating) {
+      modalRating.style.display = "none";
+      pendingRatingProduct = null;
+    }
+  });
+
+  renderShop();
+  updateNomorByMethod();
+
+  // SPLASH SCREEN
+  document.getElementById("splashBtn").addEventListener("click", () => {
+    const splash = document.getElementById("splashScreen");
+    const main = document.getElementById("mainContent");
+
+    // Fade out splash
+    splash.classList.add("hidden");
+
+    setTimeout(() => {
+      splash.style.display = "none";
+      // Fade in main content
+      main.style.display = "block";
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          main.classList.add("visible");
+        });
+      });
+
+      // Play video dengan suara karena sudah ada interaksi user
+      const vid = document.getElementById("mainProductVideo");
+      vid.muted = false;
+      vid.volume = 1;
+      vid.play();
+      vid.addEventListener("ended", () => { vid.currentTime = 0; vid.play(); });
+    }, 600);
+  });
+</script>
+</body>
+</html>

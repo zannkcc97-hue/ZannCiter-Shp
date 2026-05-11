@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>ZaanCiterr | OB52 Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', system-ui, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      outline: none;
+    }
+
+    :root {
+      --purple: #a855f7;
+      --purple-dark: #7c3aed;
+      --purple-light: #d8b4fe;
+      --bg: #05030f;
+      --card: rgba(18,12,40,0.85);
+      --border: rgba(168,85,247,0.22);
+      --text: #f0eaff;
+      --muted: #9d7fc4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(120,40,255,0.16) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 35% at 80% 80%, rgba(168,85,247,0.10) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #7c3aed; border-radius: 99px; }
+
+    /* ===================== SPLASH ===================== */
+    #splashScreen {
+      position: fixed;
+      inset: 0;
+      background: #05030f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.7s cubic-bezier(.4,0,.2,1);
+    }
+    #splashScreen::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 55% at 50% 35%, rgba(120,40,255,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    #splashScreen.hidden { opacity: 0; pointer-events: none; }
+
+    .splash-photo {
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid var(--purple);
+      box-shadow: 0 0 0 8px rgba(168,85,247,0.12), 0 0 50px rgba(168,85,247,0.38);
+      margin-bottom: 1.6rem;
+      animation: floatPhoto 4s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+    }
+    @keyframes floatPhoto {
+      0%,100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .splash-title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f0d6ff, #c084fc, #8b5cf6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-align: center;
+      letter-spacing: -1.5px;
+      margin-bottom: 0.4rem;
+      position: relative;
+      z-index: 1;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    @keyframes titleGlow {
+      from { filter: drop-shadow(0 0 10px rgba(192,132,252,0.5)); }
+      to   { filter: drop-shadow(0 0 24px rgba(192,132,252,0.9)); }
+    }
+
+    .splash-sub {
+      font-size: 0.76rem;
+      color: var(--muted);
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      margin-bottom: 2.6rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .splash-btn {
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      border: none;
+      padding: 16px 48px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: white;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      box-shadow: 0 8px 32px rgba(124,58,237,0.5), 0 0 0 1px rgba(168,85,247,0.3);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      width: auto;
+    }
+    .splash-btn:hover { transform: translateY(-3px); box-shadow: 0 14px 42px rgba(124,58,237,0.65); }
+    .splash-btn:active { transform: translateY(1px); }
+
+    .splash-credit {
+      position: relative;
+      z-index: 1;
+      margin-top: 2rem;
+      font-size: 0.66rem;
+      color: rgba(157,127,196,0.45);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    /* ===================== MAIN ===================== */
+    #mainContent {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.7s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      z-index: 1;
+    }
+    #mainContent.visible { opacity: 1; }
+    #mainContent.visible .container { animation: slideUp 0.6s cubic-bezier(.4,0,.2,1) both; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.2rem 3rem;
+    }
+
+    /* HEADER */
+    .site-header { text-align: center; padding: 0.5rem 0 2.2rem; }
+
+    .badge-neon {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(168,85,247,0.1);
+      border: 1px solid rgba(168,85,247,0.3);
+      backdrop-filter: blur(12px);
+      padding: 5px 16px;
+      border-radius: 99px;
+      font-size: 0.68rem;
+      color: var(--purple-light);
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+    .badge-neon::before {
+      content: '●';
+      color: #4ade80;
+      font-size: 7px;
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+
+    .site-header h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f0d6ff, #c084fc, #8b5cf6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -2px;
+      line-height: 1.1;
+    }
+    .site-header .tagline {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-top: 0.7rem;
+      letter-spacing: 0.3px;
+    }
+    .site-header .tagline strong { color: var(--purple-light); }
+
+    /* HERO VIDEO */
+    .hero-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .hero-video-box {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(168,85,247,0.28),
+        0 28px 70px -10px rgba(100,20,255,0.45),
+        0 0 100px -30px rgba(168,85,247,0.25);
+      max-width: 370px;
+      width: 100%;
+    }
+    .hero-video-box video { width: 100%; display: block; }
+    .hero-video-box::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      border: 1px solid rgba(168,85,247,0.35);
+      pointer-events: none;
+    }
+
+    /* INFO STRIP */
+    .info-strip {
+      display: flex;
+      justify-content: center;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+    .info-chip {
+      background: rgba(18,12,40,0.75);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      border-radius: 99px;
+      padding: 7px 16px;
+      font-size: 0.72rem;
+      color: var(--purple-light);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* CATEGORY */
+    .category-card {
+      background: rgba(12,8,28,0.75);
+      backdrop-filter: blur(20px);
+      border-radius: 22px;
+      padding: 1.4rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid var(--border);
+    }
+    .category-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--purple-light);
+      margin-bottom: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .category-title::before {
+      content: '';
+      width: 3px; height: 16px;
+      background: linear-gradient(180deg, #c084fc, #7c3aed);
+      border-radius: 99px;
+      flex-shrink: 0;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .product-card {
+      background: rgba(20,12,44,0.85);
+      border-radius: 16px;
+      padding: 0.95rem;
+      cursor: pointer;
+      border: 1px solid rgba(100,60,180,0.25);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(168,85,247,0.07), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .product-card:hover::before { opacity: 1; }
+    .product-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(168,85,247,0.55);
+      box-shadow: 0 12px 32px -8px rgba(124,58,237,0.45);
+    }
+    .product-card:active { transform: translateY(-2px); }
+
+    .badge-platform {
+      display: inline-block;
+      background: rgba(124,58,237,0.18);
+      border: 1px solid rgba(168,85,247,0.28);
+      padding: 2px 9px;
+      border-radius: 99px;
+      font-size: 0.6rem;
+      color: var(--purple-light);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .product-name {
+      font-weight: 600;
+      font-size: 0.84rem;
+      margin: 7px 0 4px;
+      color: var(--text);
+    }
+    .product-price {
+      font-size: 1.05rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #e9d5ff, #c084fc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .rating-mini {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 5px;
+      font-size: 0.68rem;
+      color: #f59e0b;
+    }
+    .rating-mini span:last-child { color: var(--muted); }
+
+    /* FOOTER */
+    .site-footer {
+      text-align: center;
+      padding: 2rem 0 0.5rem;
+      color: var(--muted);
+      font-size: 0.73rem;
+      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+      line-height: 2;
+    }
+    .site-footer strong { color: var(--purple-light); }
+
+    /* ===================== MODAL ===================== */
+    .modal-modern {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(14px);
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 2000;
+    }
+    @media(min-width:600px) { .modal-modern { align-items: center; } }
+
+    .modal-container {
+      background: linear-gradient(160deg, #110c2a, #09061e);
+      border-radius: 28px 28px 0 0;
+      max-width: 520px;
+      width: 100%;
+      padding: 0.8rem 1.3rem 2rem;
+      border: 1px solid rgba(168,85,247,0.28);
+      border-bottom: none;
+      box-shadow: 0 -8px 60px rgba(124,58,237,0.22);
+      animation: slideUpModal 0.35s cubic-bezier(.34,1.2,.64,1);
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+    @media(min-width:600px) {
+      .modal-container {
+        border-radius: 24px;
+        border-bottom: 1px solid rgba(168,85,247,0.28);
+        animation: zoomInSpring 0.35s cubic-bezier(.34,1.2,.64,1);
+      }
+    }
+    @keyframes slideUpModal {
+      from { transform: translateY(60px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes zoomInSpring {
+      from { transform: scale(0.88); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .modal-closing { animation: slideDownModal 0.25s ease forwards !important; }
+    @media(min-width:600px) { .modal-closing { animation: zoomOut 0.25s ease forwards !important; } }
+    @keyframes slideDownModal { to { transform: translateY(80px); opacity: 0; } }
+    @keyframes zoomOut { to { transform: scale(0.88); opacity: 0; } }
+
+    .modal-handle {
+      width: 38px; height: 4px;
+      background: rgba(168,85,247,0.25);
+      border-radius: 99px;
+      margin: 0.7rem auto 1rem;
+    }
+    @media(min-width:600px) { .modal-handle { display: none; } }
+
+    .close-modal {
+      float: right;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: color 0.15s;
+      padding: 2px 4px;
+    }
+    .close-modal:hover { color: white; }
+
+    .modal-container h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .form-group { margin-bottom: 0.85rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 11px 15px;
+      background: rgba(28,18,56,0.85);
+      border: 1px solid rgba(100,60,180,0.35);
+      border-radius: 13px;
+      color: white;
+      font-size: 0.88rem;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--purple); }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(157,127,196,0.45); }
+
+    .file-input-custom {
+      width: 100%;
+      padding: 11px 14px;
+      background: rgba(38,28,72,0.6);
+      border-radius: 13px;
+      color: white;
+      cursor: pointer;
+      border: 1.5px dashed rgba(168,85,247,0.35);
+      font-size: 0.83rem;
+      transition: border-color 0.2s;
+    }
+    .file-input-custom:hover { border-color: var(--purple); }
+
+    .preview-container {
+      width: 100%; aspect-ratio: 1;
+      max-width: 150px;
+      margin: 10px auto 0;
+      border-radius: 13px;
+      overflow: hidden;
+      background: #0a0820;
+      display: none;
+      border: 1px solid var(--border);
+    }
+    .preview-img { width: 100%; height: 100%; object-fit: cover; }
+
+    .section-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-bottom: 7px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .payment-flex { display: flex; gap: 8px; margin: 8px 0; flex-wrap: wrap; }
+    .pay-method {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(30,22,60,0.8);
+      border: 1px solid var(--border);
+      padding: 8px 15px;
+      border-radius: 99px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .pay-method:has(input:checked) {
+      border-color: var(--purple);
+      background: rgba(168,85,247,0.14);
+    }
+    .pay-method input { accent-color: var(--purple); }
+
+    .nomor-rekening {
+      background: rgba(0,0,0,0.22);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 13px;
+      font-size: 0.8rem;
+      text-align: center;
+      margin: 10px 0;
+      color: var(--purple-light);
+    }
+
+    button {
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      border: none;
+      padding: 13px;
+      width: 100%;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(124,58,237,0.38);
+      transition: transform 0.15s, box-shadow 0.15s;
+      letter-spacing: 0.3px;
+    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,58,237,0.52); }
+    button:active { transform: translateY(0); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .note-text {
+      font-size: 0.67rem;
+      margin-top: 9px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* RATING */
+    .rating-box {
+      background: rgba(18,12,38,0.85);
+      border-radius: 16px;
+      padding: 13px;
+      margin: 11px 0;
+      border: 1px solid var(--border);
+    }
+    .star-rating {
+      display: flex;
+      gap: 8px;
+      font-size: 28px;
+      cursor: pointer;
+      justify-content: center;
+    }
+    .star-rating span { color: rgba(255,255,255,0.12); transition: color 0.1s, transform 0.1s; }
+    .star-rating span.active { color: #f59e0b; transform: scale(1.15); }
+    .star-rating span:hover { color: #f59e0b; }
+
+    .review-list {
+      max-height: 240px;
+      overflow-y: auto;
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .review-item {
+      background: rgba(8,5,22,0.85);
+      border-radius: 13px;
+      padding: 10px 12px;
+      border: 1px solid rgba(100,60,180,0.18);
+    }
+    .review-stars { color: #f59e0b; font-size: 11px; letter-spacing: 2px; }
+    .review-text { font-size: 0.78rem; margin-top: 4px; color: #d4cae8; }
+    .review-name { font-size: 0.66rem; color: var(--purple); margin-top: 5px; }
+
+    hr { margin: 10px 0; border: none; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splashScreen">
+  <img class="splash-photo" src="https://files.catbox.moe/321av5.jpg" alt="ZaanCiterr">
+  <div class="splash-title">ZaanCiterr</div>
+  <div class="splash-sub">OB52 Store</div>
+  <button class="splash-btn" id="splashBtn">LANJUT KE PEMBELIAN</button>
+  <div class="splash-credit">by zann</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="mainContent">
+<div class="container">
+
+  <div class="site-header">
+    <div class="badge-neon">ADMIN FASTRES • SLOW RES = ADA KESIBUKAN</div>
+    <h1>ZaanCiterr</h1>
+    <div class="tagline">OB52 STORE — <strong>LEBIH MAHAL LEBIH GACOR</strong> | FULL TUTOR + GARANSI</div>
+  </div>
+
+  <div class="hero-wrap">
+    <div class="hero-video-box">
+      <video id="mainProductVideo" src="https://files.catbox.moe/mfbnil.mp4" loop playsinline preload="auto"></video>
+    </div>
+  </div>
+
+  <div class="info-strip">
+    <div class="info-chip">💳 DANA & GOPAY</div>
+    <div class="info-chip">🛡️ Bergaransi</div>
+    <div class="info-chip">⚡ Fast Respon</div>
+    <div class="info-chip">📖 Full Tutor</div>
+  </div>
+
+  <div id="productListRoot"></div>
+
+  <div class="site-footer">
+    <strong>DANA & GOPAY : 082392368932</strong><br>
+    QRIS coming soon &nbsp;·&nbsp; Bergaransi &nbsp;·&nbsp; by zann
+  </div>
+</div>
+</div>
+
+<!-- MODAL ORDER -->
+<div id="orderModal" class="modal-modern">
+  <div class="modal-container" id="modalContainer">
+    <div class="modal-handle"></div>
+    <span class="close-modal">&times;</span>
+    <h3>Order Produk</h3>
+    <p id="modalProductName" style="font-weight:600;color:#d4b3ff;font-size:0.9rem;margin:4px 0 2px;"></p>
+    <p id="modalProductPrice" style="font-size:1.15rem;font-weight:700;margin-bottom:1rem;background:linear-gradient(90deg,#e9d5ff,#c084fc);-webkit-background-clip:text;background-clip:text;color:transparent;"></p>
+
+    <div class="form-group">
+      <label>Nama TikTok</label>
+      <input type="text" id="tiktokName" placeholder="@username">
+    </div>
+    <div class="form-group">
+      <label>Nomor WhatsApp</label>
+      <input type="tel" id="waNumber" placeholder="08xxxxxxxxxx">
+    </div>
+    <div class="form-group">
+      <label>Email Gmail</label>
+      <input type="email" id="emailBuyer" placeholder="email@gmail.com">
+    </div>
+
+    <div class="form-group">
+      <label>Bukti Pembayaran (SS)</label>
+      <input type="file" id="proofImage" accept="image/*" class="file-input-custom">
+      <div id="previewContainer" class="preview-container">
+        <img id="previewImg" class="preview-img" alt="Preview">
+      </div>
+    </div>
+
+    <div class="section-label">Metode Bayar</div>
+    <div class="payment-flex">
+      <label class="pay-method"><input type="radio" name="payMethod" value="DANA" checked> DANA</label>
+      <label class="pay-method"><input type="radio" name="payMethod" value="GOPAY"> GOPAY</label>
+      <label class="pay-method" style="opacity:0.4"><input type="radio" name="payMethod" value="QRIS" disabled> QRIS</label>
+    </div>
+
+    <div id="nomorDisplay" class="nomor-rekening">📱 Nomor DANA: <strong>082392368932</strong></div>
+
+    <button id="sendOrderBtn">🚀 KIRIM KE BOT TELEGRAM</button>
+    <div class="note-text">Klik "Pilih file" untuk buka galeri / file manager HP</div>
+  </div>
+</div>
+
+<!-- MODAL RATING -->
+<div id="ratingModal" class="modal-modern">
+  <div class="modal-container" style="max-width:440px;">
+    <div class="modal-handle"></div>
+    <span class="close-rating-modal" style="float:right;font-size:20px;cursor:pointer;color:var(--muted);">&times;</span>
+    <h3>⭐ Beri Rating & Review</h3>
+    <p id="ratingProductName" style="margin:6px 0 12px;color:#d4b3ff;font-size:0.86rem;"></p>
+
+    <div class="rating-box">
+      <div class="star-rating" id="starRating">
+        <span data-value="1">★</span>
+        <span data-value="2">★</span>
+        <span data-value="3">★</span>
+        <span data-value="4">★</span>
+        <span data-value="5">★</span>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <textarea id="reviewText" placeholder="Tulis komentar kamu..." rows="3"
+          style="width:100%;padding:10px 14px;border-radius:13px;background:rgba(28,18,56,0.85);border:1px solid rgba(100,60,180,0.35);color:white;font-size:0.83rem;resize:none;"></textarea>
+      </div>
+      <div class="form-group">
+        <input type="text" id="reviewerName" placeholder="Nama kamu (opsional)"
+          style="width:100%;padding:10px 14px;border-radius:13px;background:rgba(28,18,56,0.85);border:1px solid rgba(100,60,180,0.35);color:white;font-size:0.83rem;">
+      </div>
+      <button id="submitRatingBtn">Kirim Review</button>
+    </div>
+
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+  // ======================= PRODUK =======================
+  const rawProducts = [
+    "AIMLOCK 40% : 10K","AIMLOCK 45% : 15K","AIMLOCK 50% : 20K","AIMLOCK 65% : 25K","AIMLOCK 80% : 35K","AIMLOCK 90% : 50K",
+    "HEADLOCK 40% : 10K","HEADLOCK 45% : 15K","HEADLOCK 50% : 20K","HEADLOCK 65% : 25K","HEADLOCK 80% : 35K","HEADLOCK 90% : 50K",
+    "LOCK HEAD 99% : 129K","DRAG HS 40% : 10K","DRAG HS 45% : 15K","DRAG HS 55% : 20K","DRAG HS 65% : 25K","DRAG HS 80% : 35K","DRAG HS 90% : 50K",
+    "EASY DRAG 40% : 10K","EASY DRAG 45% : 15K","EASY DRAG 55% : 20K","EASY DRAG 65% : 25K","EASY DRAG 80% : 35K","EASY DRAG 90% : 50K",
+    "BADAN HS ALL ANDRO : 40K","SET ANDRO VIP : 30K",
+    "BADAN HS IOS : 70k","LEHER HS IOS : 70k","HEADLOCK 50% : 55k","HEADLOCK 70% : 75k","HEADLOCK 80% : 85k","HEADLOCK 90% : 95k",
+    "DRAG HS IOS 50% : 50K","DRAG HS IOS 65% : 65k","DRAG HS IOS 80% : 80K","DRAG HS IOS 90% : 90K","SET IP VIP : 50K",
+    "HOLOGRAM SENJATA (ANDRO) : 15k","HOLOGRAM 3D (ANDRO) : 20K","HOLOGRAM SENJATA (IOS) : 30K","HOLOGRAM 3D (IOS) : 35K",
+    "GLOWAL MINI : 10K","GLOWAL GEPENG : 15K","GRAFIK MC : 10K"
+  ];
+
+  function parseProduct(str) {
+    const idx = str.lastIndexOf(":");
+    const name = str.substring(0, idx).trim();
+    const priceRaw = str.substring(idx+1).trim().toLowerCase().replace(/k/g,"000");
+    const priceNum = parseInt(priceRaw.replace(/[^0-9]/g,"")) || 0;
+    return { name, priceNum, priceFormatted: "Rp " + priceNum.toLocaleString("id-ID") };
+  }
+
+  const allProducts = rawProducts.map(parseProduct);
+  const categories = {
+    "ANDROID": allProducts.slice(0,27),
+    "IPHONE / IOS": allProducts.slice(27,38),
+    "HOLOGRAM (ANDRO & IOS)": allProducts.slice(38,42),
+    "GLOWAL MINI/GEPENG": allProducts.slice(42,44),
+    "GRAFIK MC": allProducts.slice(44,45)
+  };
+
+  // ======================= RATINGS =======================
+  let ratingsData = {};
+  try { ratingsData = JSON.parse(localStorage.getItem("productRatings")) || {}; } catch(e) { ratingsData = {}; }
+
+  const dummyRatings = {
+    "AIMLOCK 40%": { avg:4.5, total:12, reviews:[
+      {name:"RendiGanz",stars:5,text:"Gacor banget aimlocknya, auto headshot!",date:"2026-04-01"},
+      {name:"JokoFF",stars:4,text:"Mantap cuma kadang miss dikit",date:"2026-04-02"}
+    ]},
+    "AIMLOCK 50%": { avg:4.9, total:54, reviews:[
+      {name:"Si Udin",stars:5,text:"Wah uda 50% aja udah kayak pake aimbot pro, musuh pada tumbang semua 😂",date:"2026-04-05"},
+      {name:"Rere",stars:5,text:"Serius dah, aimlock 50% ini recommended banget, gas pol rank!",date:"2026-04-05"},
+      {name:"Budi Jago",stars:5,text:"Awalnya ragu takut zonk, eh ternyata jos gandos broo",date:"2026-04-04"},
+      {name:"Dikaa",stars:5,text:"Kepencet terus ini mah, musuh kagak bisa gerak wkwk",date:"2026-04-04"},
+      {name:"Caca",stars:5,text:"Bikin jadi super saiyan wkwk, makasih ZaanCiterr",date:"2026-04-02"},
+      {name:"Sasa",stars:5,text:"Temen pada tanya pake cheat apa, ku diem aja 😎",date:"2026-04-01"},
+      {name:"Gilang",stars:5,text:"Udah beli 3x, selalu gacor, ga nyesel",date:"2026-03-31"}
+    ]},
+    "AIMLOCK 90%": { avg:4.8, total:32, reviews:[
+      {name:"KingMahesa",stars:5,text:"90% ini beda level, musuh langsung lemes duluan",date:"2026-04-05"},
+      {name:"Leo",stars:5,text:"Cocok buat push rank, aimnya kayak magnet 🧲",date:"2026-04-04"},
+      {name:"Rina",stars:5,text:"Dah level dewa pake ini, top global soon 😤",date:"2026-04-03"},
+      {name:"Fajar",stars:5,text:"Auto menang terus, musuh ngira aku pro player asli",date:"2026-04-02"}
+    ]},
+    "HEADLOCK 50%": { avg:4.8, total:8, reviews:[
+      {name:"SasukeUchiha",stars:5,text:"Headlock 50% udah kayak pro player",date:"2026-04-03"},
+      {name:"NarutoKun",stars:4,text:"Recommended banget!",date:"2026-04-01"}
+    ]},
+    "DRAG HS 80%": { avg:4.7, total:15, reviews:[
+      {name:"ItachiSama",stars:5,text:"Drag HS mantap buat ranked",date:"2026-04-04"},
+      {name:"KakashiSensei",stars:4,text:"Oke sip, next beli lagi",date:"2026-03-30"}
+    ]},
+    "SET ANDRO VIP": { avg:5.0, total:5, reviews:[
+      {name:"MadaraUchiha",stars:5,text:"VIP beda sendiri, jos gandos!",date:"2026-04-05"}
+    ]},
+    "BADAN HS IOS": { avg:4.3, total:7, reviews:[
+      {name:"LeviAkerman",stars:4,text:"Untuk IOS lumayan akurat",date:"2026-04-02"}
+    ]}
+  };
+
+  for (const [k,v] of Object.entries(dummyRatings)) {
+    if (!ratingsData[k]) ratingsData[k] = v;
+  }
+  try { localStorage.setItem("productRatings", JSON.stringify(ratingsData)); } catch(e) {}
+
+  function getProductRating(name) {
+    return ratingsData[name] || { avg:0, total:0, reviews:[] };
+  }
+
+  function addRating(productName, stars, text, reviewerName) {
+    if (!ratingsData[productName]) ratingsData[productName] = { avg:0, total:0, reviews:[] };
+    ratingsData[productName].reviews.unshift({
+      name: reviewerName || "Pembeli ZaanCiterr", stars, text,
+      date: new Date().toISOString().slice(0,10)
+    });
+    const total = ratingsData[productName].reviews.reduce((s,r) => s + r.stars, 0);
+    ratingsData[productName].avg = total / ratingsData[productName].reviews.length;
+    ratingsData[productName].total = ratingsData[productName].reviews.length;
+    try { localStorage.setItem("productRatings", JSON.stringify(ratingsData)); } catch(e) {}
+    renderShop();
+  }
+
+  function renderStars(avg) {
+    const full = Math.floor(avg);
+    const half = avg % 1 >= 0.5;
+    return "★".repeat(full) + (half ? "½" : "") + "☆".repeat(5 - Math.ceil(avg));
+  }
+
+  // ======================= RENDER TOKO =======================
+  function renderShop() {
+    const root = document.getElementById("productListRoot");
+    root.innerHTML = "";
+    for (const [catName, items] of Object.entries(categories)) {
+      if (!items.length) continue;
+      const catDiv = document.createElement("div");
+      catDiv.className = "category-card";
+      catDiv.innerHTML = `<div class="category-title">${catName}</div><div class="product-grid"></div>`;
+      root.appendChild(catDiv);
+      const grid = catDiv.querySelector(".product-grid");
+      items.forEach(prod => {
+        const r = getProductRating(prod.name);
+        const card = document.createElement("div");
+        card.className = "product-card";
+        const platform = prod.name.includes("IOS") ? "iOS" : prod.name.includes("ANDRO") ? "Android" : "All";
+        card.innerHTML = `
+          <div class="badge-platform">${platform}</div>
+          <div class="product-name">${prod.name}</div>
+          <div class="product-price">${prod.priceFormatted}</div>
+          <div class="rating-mini">
+            <span>${renderStars(r.avg || 0)}</span>
+            <span>(${r.total || 0})</span>
+          </div>`;
+        card.onclick = () => openOrderModal(prod);
+        grid.appendChild(card);
+      });
+    }
+  }
+
+  // ======================= MODAL ORDER =======================
+  let selectedProduct = null, selectedImageFile = null, pendingRatingProduct = null;
+  const modalOrder = document.getElementById("orderModal");
+  const modalRating = document.getElementById("ratingModal");
+  const modalContainer = document.getElementById("modalContainer");
+  const nomorDisplay = document.getElementById("nomorDisplay");
+
+  function openOrderModal(product) {
+    selectedProduct = product;
+    document.getElementById("modalProductName").innerText = product.name;
+    document.getElementById("modalProductPrice").innerText = product.priceFormatted;
+    document.getElementById("proofImage").value = "";
+    document.getElementById("previewContainer").style.display = "none";
+    selectedImageFile = null;
+    updateNomorByMethod();
+    modalOrder.style.display = "flex";
+    if (navigator.vibrate) navigator.vibrate(10);
+  }
+
+  function closeModalWithAnim() {
+    modalContainer.classList.add("modal-closing");
+    setTimeout(() => {
+      modalOrder.style.display = "none";
+      modalContainer.classList.remove("modal-closing");
+    }, 250);
+  }
+
+  function updateNomorByMethod() {
+    const sel = document.querySelector('input[name="payMethod"]:checked');
+    if (sel?.value === "DANA") nomorDisplay.innerHTML = "📱 Nomor DANA: <strong>082392368932</strong>";
+    else if (sel?.value === "GOPAY") nomorDisplay.innerHTML = "📱 Nomor GOPAY: <strong>082392368932</strong>";
+    else nomorDisplay.innerHTML = "📱 DANA/GOPAY: <strong>082392368932</strong>";
+  }
+
+  document.getElementById("proofImage").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      selectedImageFile = file;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        document.getElementById("previewImg").src = ev.target.result;
+        document.getElementById("previewContainer").style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    } else alert("Harap pilih file gambar (jpg/png)");
+  });
+
+  document.querySelectorAll('input[name="payMethod"]').forEach(r => r.addEventListener("change", updateNomorByMethod));
+  document.querySelector(".close-modal").onclick = closeModalWithAnim;
+  window.addEventListener("click", e => { if (e.target === modalOrder) closeModalWithAnim(); });
+
+  const BOT_TOKEN = "8186605145:AAH4nAskT_3TbCjYP_WC2I6ZcLspEAJmnTM";
+  const CHAT_ID = "7491173075";
+
+  document.getElementById("sendOrderBtn").addEventListener("click", async () => {
+    const tiktok = document.getElementById("tiktokName").value.trim();
+    const wa = document.getElementById("waNumber").value.trim();
+    const email = document.getElementById("emailBuyer").value.trim();
+    const payMethod = document.querySelector('input[name="payMethod"]:checked');
+    if (!tiktok || !wa || !email) { alert("Isi semua data (TikTok, WA, Email)"); return; }
+    if (!selectedImageFile) { alert("Upload bukti SS pembayaran dulu ya!"); return; }
+    if (!payMethod || payMethod.value === "QRIS") { alert("Pilih DANA atau GOPAY"); return; }
+
+    const btn = document.getElementById("sendOrderBtn");
+    btn.disabled = true; btn.textContent = "Mengirim...";
+
+    const formData = new FormData();
+    formData.append("chat_id", CHAT_ID);
+    formData.append("photo", selectedImageFile, "bukti_pembayaran.jpg");
+    formData.append("caption",
+      `ORDER MASUK\nTikTok: ${tiktok}\nWA: ${wa}\nEmail: ${email}\nProduk: ${selectedProduct.name}\nHarga: ${selectedProduct.priceFormatted}\nMetode: ${payMethod.value}\nNo tujuan: 082392368932`
+    );
+
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method:"POST", body:formData });
+      const result = await res.json();
+      if (result.ok) {
+        alert("✅ Pesanan terkirim! Terima kasih.");
+        closeModalWithAnim();
+        ["tiktokName","waNumber","emailBuyer"].forEach(id => document.getElementById(id).value = "");
+        document.getElementById("proofImage").value = "";
+        document.getElementById("previewContainer").style.display = "none";
+        selectedImageFile = null;
+        pendingRatingProduct = selectedProduct;
+        document.getElementById("ratingProductName").innerText = selectedProduct.name;
+        document.getElementById("reviewText").value = "";
+        document.getElementById("reviewerName").value = "";
+        resetStars();
+        showReviewsForProduct(selectedProduct.name);
+        modalRating.style.display = "flex";
+      } else { alert("Gagal mengirim, coba lagi."); }
+    } catch(err) { alert("Error: " + err.message); }
+
+    btn.disabled = false; btn.textContent = "🚀 KIRIM KE BOT TELEGRAM";
+  });
+
+  // ======================= RATING UI =======================
+  let currentRating = 0;
+  const starsSpan = document.querySelectorAll("#starRating span");
+
+  function resetStars() {
+    currentRating = 0;
+    starsSpan.forEach(s => s.classList.remove("active"));
+  }
+
+  starsSpan.forEach(star => {
+    star.addEventListener("click", () => {
+      currentRating = parseInt(star.dataset.value);
+      starsSpan.forEach((s,i) => s.classList.toggle("active", i < currentRating));
+    });
+    star.addEventListener("mouseover", () => {
+      const val = parseInt(star.dataset.value);
+      starsSpan.forEach((s,i) => s.classList.toggle("active", i < val));
+    });
+    star.addEventListener("mouseout", () => {
+      starsSpan.forEach((s,i) => s.classList.toggle("active", i < currentRating));
+    });
+  });
+
+  function showReviewsForProduct(productName) {
+    const r = getProductRating(productName);
+    const div = document.getElementById("reviewList");
+    if (!r.reviews?.length) {
+      div.innerHTML = "<div style='text-align:center;padding:12px;color:var(--muted);font-size:0.78rem;'>Belum ada ulasan. Jadi yang pertama!</div>";
+      return;
+    }
+    div.innerHTML = r.reviews.map(rv => `
+      <div class="review-item">
+        <div class="review-stars">${renderStars(rv.stars)}</div>
+        <div class="review-text">${rv.text}</div>
+        <div class="review-name">— ${rv.name} · ${rv.date}</div>
+      </div>`).join("");
+  }
+
+  document.getElementById("submitRatingBtn").addEventListener("click", () => {
+    if (!pendingRatingProduct) return;
+    if (!currentRating) { alert("Pilih rating bintang dulu!"); return; }
+    const text = document.getElementById("reviewText").value.trim();
+    if (!text) { alert("Tulis komentar dulu ya!"); return; }
+    const name = document.getElementById("reviewerName").value.trim() || "Pembeli ZaanCiterr";
+    addRating(pendingRatingProduct.name, currentRating, text, name);
+    alert("Makasih atas rating & review nya! 🙏");
+    modalRating.style.display = "none";
+    pendingRatingProduct = null;
+  });
+
+  document.querySelector(".close-rating-modal").addEventListener("click", () => {
+    modalRating.style.display = "none";
+    pendingRatingProduct = null;
+  });
+  window.addEventListener("click", e => {
+    if (e.target === modalRating) { modalRating.style.display = "none"; pendingRatingProduct = null; }
+  });
+
+  renderShop();
+  updateNomorByMethod();
+
+  // ======================= SPLASH =======================
+  document.getElementById("splashBtn").addEventListener("click", () => {
+    const splash = document.getElementById("splashScreen");
+    const main = document.getElementById("mainContent");
+
+    splash.classList.add("hidden");
+
+    setTimeout(() => {
+      splash.style.display = "none";
+      main.style.display = "block";
+      requestAnimationFrame(() => requestAnimationFrame(() => main.classList.add("visible")));
+
+      // Video play dengan suara karena ada interaksi klik dari user
+      const vid = document.getElementById("mainProductVideo");
+      vid.muted = false;
+      vid.volume = 1;
+      vid.play().catch(() => { vid.muted = true; vid.play(); });
+    }, 700);
+  });
+</script>
+</body>
+</html>
